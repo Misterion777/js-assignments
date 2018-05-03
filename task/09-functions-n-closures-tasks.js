@@ -27,9 +27,9 @@
  *
  */
 function getComposition(f,g) {
-    throw new Error('Not implemented');
+    return function (x) {return f(g(x))};
+    
 }
-
 
 /**
  * Возвращает функцию возведения в степень для переданного аргумента
@@ -48,9 +48,9 @@ function getComposition(f,g) {
  *
  */
 function getPowerFunction(exponent) {
-    throw new Error('Not implemented');
+    return function(x){return Math.pow(x,exponent);};
 }
-
+ 
 
 /**
  * Возвращает полином на основании переданных аргументов
@@ -66,10 +66,21 @@ function getPowerFunction(exponent) {
  *   getPolynom()      => null
  */
 function getPolynom() {
-    throw new Error('Not implemented');
+    var args = arguments;
+ 
+    if (args.length == 0)
+        return null;
+     
+    return function(x){
+        let y = 0;
+        for (var i = 0; i < args.length; i++) {
+            y+= args[i] * Math.pow(x, args.length - i - 1) 
+        }
+        return y;
+    }
 }
-
-
+ 
+ 
 /**
  * Заменяет переданную функцию и возвращает функцию,
  * которая в первый раз вызывает переданную функцию, а затем всегда возвращает результат кэширования.
@@ -85,10 +96,21 @@ function getPolynom() {
  *   memoizer() => тоже рандомное число  (при всех последующих вызовах возвращается тоже закешированный результат)
  */
 function memoize(func) {
-    throw new Error('Not implemented');
+    let cache = {};
+ 
+    return (...args) => {
+        let n = args[0];
+        if (n in cache){
+            return cache[n];
+        }
+        let result = func(n);
+        cache[n] = result;
+        return result;
+    }
+ 
 }
-
-
+ 
+ 
 /**
  * Возвращает функцию, которая пытаеся вызвать переданную функцию, и,
  * если она выбрасывает ошибку, повторяет вызов функции заданное количество раз.
@@ -104,9 +126,17 @@ function memoize(func) {
  * retryer() => 2
  */
 function retry(func, attempts) {
-    throw new Error('Not implemented');
+    return function(){
+        for (var i = 0; i < attempts; i++) {
+            try {
+                return func();    
+            } catch (e) {
+                continue;
+            }
+        } 
+         
+    }
 }
-
 
 /**
  * Возвращает логирующую обертку для указанного метода,
@@ -131,7 +161,13 @@ function retry(func, attempts) {
  *
  */
 function logger(func, logFunc) {
-    throw new Error('Not implemented');
+    return function(){
+        let args = JSON.stringify(Array.from(arguments)).slice(1,-1);
+        logFunc(`${func.name}(${args}) starts`);
+        let answer = func.apply(this, arguments);
+        logFunc(`${func.name}(${args}) ends`);
+        return answer;
+    }
 }
 
 
@@ -148,7 +184,10 @@ function logger(func, logFunc) {
  *   partialUsingArguments(fn, 'a','b','c','d')() => 'abcd'
  */
 function partialUsingArguments(fn) {
-    throw new Error('Not implemented');
+    let args = Array.from(arguments).slice(1);
+    return function(){
+        return args.concat(Array.from(arguments)).join('');
+    }
 }
 
 
@@ -169,7 +208,9 @@ function partialUsingArguments(fn) {
  *   getId10() => 11
  */
 function getIdGeneratorFunction(startFrom) {
-    throw new Error('Not implemented');
+    return function(){
+        return startFrom++;
+    }
 }
 
 
