@@ -96,18 +96,9 @@ function getPolynom() {
  *   memoizer() => тоже рандомное число  (при всех последующих вызовах возвращается тоже закешированный результат)
  */
 function memoize(func) {
-    let cache = {};
- 
-    return (...args) => {
-        let n = args[0];
-        if (n in cache){
-            return cache[n];
-        }
-        let result = func(n);
-        cache[n] = result;
-        return result;
-    }
- 
+    let cache = func();
+    
+    return ()=> cache;
 }
  
  
