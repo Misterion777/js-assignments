@@ -131,7 +131,7 @@ class Selector {
     }
 
     order_check(curr_elem) {
-        if (!this.unused.includes(curr_elem)) throw Selector.orderError;
+        if (this.unused.indexOf(curr_elem) == -1) throw Selector.orderError;
         while(this.unused[0] != curr_elem) this.unused.shift();
     }
 
